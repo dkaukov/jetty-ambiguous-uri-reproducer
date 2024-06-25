@@ -1,5 +1,8 @@
 package jetty12;
 
+import java.util.Set;
+
+import org.eclipse.jetty.ee10.servlet.ServletHandler;
 import org.eclipse.jetty.http.UriCompliance;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -8,8 +11,6 @@ import org.eclipse.jetty.server.Server;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @Component
 public class JettyCustomizer implements WebServerFactoryCustomizer<JettyServletWebServerFactory> {
@@ -26,10 +27,13 @@ public class JettyCustomizer implements WebServerFactoryCustomizer<JettyServletW
                     .forEach(factory -> {
                         HttpConfiguration httpConfig = ((HttpConnectionFactory) factory).getHttpConfiguration();
                         httpConfig.setUriCompliance(UriCompliance.from(Set.of(
-                                UriCompliance.Violation.AMBIGUOUS_PATH_SEPARATOR,
-                                UriCompliance.Violation.AMBIGUOUS_PATH_ENCODING)));
+                        //        UriCompliance.Violation.AMBIGUOUS_PATH_SEPARATOR,
+                                UriCompliance.Violation.AMBIGUOUS_PATH_ENCODING
+                        )));
                     });
         }
+      server.getContainedBeans(ServletHandler.class)
+        .forEach(handler -> handler.setDecodeAmbiguousURIs(true));
     }
 }
 

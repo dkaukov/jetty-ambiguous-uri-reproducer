@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,6 +31,6 @@ class Jetty11Test {
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-        assertTrue(response.toString().contains("%2F"));
+        assertEquals("foo=bar%2Fbaz=baz", response.getBody());
     }
 }
